@@ -1,18 +1,11 @@
 import Heap from "./Heap.js";
 
-const heap = new Heap((a, b) => {
-  return a < b;
-});
 
-const input = [5, 3, 4, 6];
-
-input.forEach(value => {
-  heap.push(value);
-  console.log(heap);
-})
-
-console.log(heap);
-
-while (heap.size() !== 0) {
-  console.log(heap.pop());
+//const pairwiseQueue = new Heap((a, b) => a[1] > b[1]);
+const pairwiseQueue = new Heap((a, b) => a[1] < b[1]);
+pairwiseQueue.push(['low', 0], ['medium', 5], ['high', 10]);
+//pairwiseQueue.push(0, 1, 4, -30);
+console.log('\nContents:');
+while (pairwiseQueue.size()) {
+  console.log(pairwiseQueue.pop()); //=> 'high', 'medium', 'low'
 }

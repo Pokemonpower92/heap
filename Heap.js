@@ -4,11 +4,7 @@ class Heap {
    * given comparision function in comparator.
    * @param {func} comparator
    */
-  constructor(
-    comparator = (a, b) => {
-      return a > b;
-    }
-  ) {
+  constructor(comparator = (a, b) => a > b) {
     this._heap = [];
     this._comparator = comparator;
 
@@ -39,11 +35,10 @@ class Heap {
    * @param {Object} object
    */
   push = (...objects) => {
-    objects.forEach((object) => {
+    objects.forEach(object => {
       this._heap.push(object);
       this._siftUp();
     });
-    console.log(this._heap);
   };
 
   /**
@@ -54,7 +49,6 @@ class Heap {
     if (this.isEmpty() === false) {
       const retValue = this._heap[0];
       this._siftDown();
-
       return retValue;
     } else {
       return null;
@@ -72,8 +66,10 @@ class Heap {
     }
   };
 
+
+
   _compare = (a, b) => {
-    return this._comparator(a, b);
+    return this._comparator(this._heap[a], this._heap[b]);
   };
 
   _swap = (a, b) => {
@@ -87,35 +83,19 @@ class Heap {
    * @returns null
    */
   _siftDown = () => {
-    // [1]
     this._swap(0, this.size() - 1);
     this._heap = this._heap.slice(0, this.size() - 1);
-    console.log(`Old heap: ${this._heap}`)
 
-    let currNode = 0;
-
-    while (currNode < this.size()) {
-      const rightChild = this.right(currNode);
-      const leftChild = this.left(currNode);
-      const swapChild = this._compare(
-        this._heap[rightChild],
-        this._heap[leftChild]
-      )
-        ? rightChild
-        : leftChild;
-      console.log(`Swap child: ${swapChild}`)
-
-      if (this._compare(this._heap[swapChild], this._heap[currNode])) {
-        this._swap(currNode, swapChild);
-        console.log(`New heap: ${this._heap}`)
-        currNode = swapChild;
-      } else {
-        break;
-      }
-
-      
+    let node = 0;
+    while (
+      (this.left(node) < this.size() && this._compare(this.left(node), node)) ||
+      (this.right(node) < this.size() && this._compare(this.right(node), node))
+    ) {
+      let maxChild = (this.right(node) < this.size() && this._compare(this.right(node), this.left(node))) ? this.right(node) : this.left(node);
+      this._swap(node, maxChild);
+      node = maxChild;
     }
-  };
+  }      
 
   /**
    * Sift the newest element into its expected position.
@@ -124,9 +104,9 @@ class Heap {
   _siftUp = () => {
     let currNode = this.size() - 1;
 
-    while (currNode >= 0) {
+    while (currNode > 0) {
       if (
-        this._compare(this._heap[currNode], this._heap[this.parent(currNode)])
+        this._compare(currNode, this.parent(currNode))
       ) {
         this._swap(currNode, this.parent(currNode));
         currNode = this.parent(currNode);
